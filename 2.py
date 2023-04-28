@@ -1,0 +1,58 @@
+class NonNegative:
+
+    def __set__(self, instance, value):
+        if isinstance(value, str):
+            raise ValueError("Значение должно быть числом")
+        instance.__dict__[self.my_attr] = value
+
+    def __set_name__(self, owner, my_attr):
+        self.my_attr = my_attr
+
+
+class Worker:
+    wage = NonNegative()
+    bonus = NonNegative()
+
+    def __init__(self, name, surname, position, wage, bonus):
+        self.name = name
+        self.surname = surname
+        self.position = position
+        self.wage = wage
+        self.bonus = bonus
+        self._income = {"wage": self.wage, "bonus": self.bonus}
+
+
+class Position(Worker):
+    def __init__(self, name, surname, position, wage, bonus):
+        super().__init__(name, surname, position, wage, bonus)
+        self.income = None
+
+    def __str__(self):
+        return f'{name} имеет доход с учетом премии {sum(self.income.values())} рублей'
+
+    def get_full_name(self):
+        return self.name
+
+    def get_total_income(self):
+        self.income = {"wage": self.wage, "bonus": self.bonus}
+        total = sum(self.income.values())
+        return total
+
+
+name = "Петр Петрович"
+surname = "Иванов"
+position = "Сисадмин"
+wage = 50000
+bonus = 30000
+
+obj = Position(name, surname, position, wage, bonus)
+
+print(obj.name)
+print(obj.surname)
+print(obj.position)
+print(obj.wage)
+print(obj.bonus)
+
+print(obj.get_full_name())
+
+print(obj.get_total_income())
